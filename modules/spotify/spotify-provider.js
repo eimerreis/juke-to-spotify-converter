@@ -13,21 +13,7 @@ function SpotifyProvider(){
     });
 }
 
-SpotifyProvider.prototype.connect = function(cb){
-    var that = this;
-    this._spotify.clientCredentialsGrant(null, function(err, data){
-        if(err){
-            return cb(new SpotifyError(null, 'Retrieving access token failed', {}, err), null);
-        }
-        var accessToken = data.body['access_token'];
-        console.log(accessToken);
-        // Save the access token so that it's used in future calls
-        that._spotify.setAccessToken(accessToken);
-        console.log(accessToken);
-        return cb(null, accessToken);
-    });
-};
-
+SpotifyProvider.prototype.AUTHORIZATION_CODE = '';
 
 /**
  * Searchs for tracks withing the spotify library and returns all results
@@ -83,6 +69,27 @@ SpotifyProvider.prototype.getUserPlaylists = function(userId, cb){
             return cb(null, playlists.body);
         });
 
+    });
+};
+
+SpotifyProvider.prototype.addTracksToPlaylist = function(userId, playlistId, tracks, cb){
+    var that = this;
+    console.log(tracks);
+    this._spotify.clientCredentialsGrant(null, function(err, data){
+        console.log(err);
+        console.log(data);
+       if(err){
+           return cb(new SpotifyError(null, 'Retrieving auth token failed', {}, err), null);
+       }
+        that._spotify.setAccessToken(data.body['access_token']);
+        that._spotify.addTracksToPlaylist(userId, playlistId, tracks, null, function(err, snapshot){
+            console.log(err);
+           if(err){
+               return cb(new SpotifyError(null, 'Adding tracks to playlist failed', {}, err), null);
+           }
+            console.log(snapshot);
+            return cb(null, snapshot);
+        });
     });
 };
 
