@@ -1,48 +1,64 @@
 'use strict';
+var SpotifyWebApi = require('spotify-web-api-node');
+
 var request = require('request');
 var GlobalConfig = require('../../conf/config');
 var SpotifyConfig = require('./spotify-config');
 var SpotifyError = require('./spotify-errors').SpotifyError;
 
 function SpotifyProvider(){
-    this.connect(function(err, wasSuccessful){
-       if(err || !wasSuccessful || !this.accessToken || !this.tokenType){
-           return err;
-       }
+    this._spotify = new SpotifyWebApi({
+        clientId: SpotifyConfig.SPOTIFY_CLIENT_ID,
+        clientSecret: SpotifyConfig.SPOTIFY_SECRET_ID
     });
 }
 
-SpotifyProvider.prototype.accessToken = '';
-SpotifyProvider.prototype.tokenType = '';
-
-/**
- * Connects to the Spotify Web API and performs Authorization
- * @param cb
- */
 SpotifyProvider.prototype.connect = function(cb){
     var that = this;
-    var requestOptions = {
-        url: SpotifyConfig.AUTHENTICATION_ENDPOINT,
-        headers: {
-            'Authorization': 'Basic ' + (new Buffer(SpotifyConfig.SPOTIFY_CLIENT_ID + ':' + SpotifyConfig.SPOTIFY_SECRET_ID).toString('base64'))
-        },
-        form: {
-            grant_type: SpotifyConfig.AUTHENTICATION_GRANT_TYPE
-        },
-        json: true
-    };
-    request.post(requestOptions, function(err, response, body){
-        if(err || response.statusCode != 200){
-            return cb(new SpotifyError(null, 'Authentication to Spotify failed', {response: response, body: body}, err), false);
+    this._spotify.clientCredentialsGrant(null, function(err, data){
+        if(err){
+            return cb(new SpotifyError(null, 'Retrieving access token failed', {}, err), null);
         }
-        that.accessToken = body.access_token;
-        this.tokenType = body.token_type;
-        return cb(null, true);
+        var accessToken = data.body['access_token'];
+        console.log(accessToken);
+        // Save the access token so that it's used in future calls
+        that._spotify.setAccessToken(accessToken);
+        console.log(accessToken);
+        return cb(null, accessToken);
     });
 };
 
-SpotifyProvider.prototype.searchTrack(track, cb){
 
+SpotifyProvider.prototype.searchTracks = function(query, cb){
+    var that = this;
+    this._spotify.clientCredentialsGrant(null, function(err, data){
+       if(err){
+           return cb(new SpotifyError(null, 'Retrieving auth token failed', {}, err), null);
+       }
+        that._spotify.searchTracks(query, {limit: 3}, function(err, tracks){
+           if(err){
+               return cb(new SpotifyError(null, 'Retrieving tracks failed', {query: query}, err), null);
+           }
+            return cb(null, tracks);
+        });
+    });
 };
+
+
+SpotifyProvider.prototype.getUserPlaylists = function(userId, cb){
+    var that = this;
+        this._spotify.clientCredentialsGrant(null, function(err, data){
+        // Save the access token so that it's used in future calls
+        that._spotify.setAccessToken(data.body['access_token']);
+        that._spotify.getUserPlaylists('eimerreis', {limit: 3}, function(err, playlists){
+            if(err){
+                return cb(new SpotifyError(null, 'Retrieving playlists failed', {}, err), null);
+            }
+            return cb(null, playlists.body);
+        });
+
+    });
+};
+
 
 module.exports = SpotifyProvider;

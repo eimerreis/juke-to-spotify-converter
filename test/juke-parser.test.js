@@ -1,11 +1,11 @@
-/*'use strict';
+'use strict';
 var fileSystem = require("fs");
 var should = require('should');
 var util = require('util');
 
 var JukeParser = require('../modules/juke/juke-parser');
 
-describe('JukeParser', function(){
+describe.only('JukeParser', function(){
    it('should return all playlist items of the html file', function(done){
        this.timeout(20000);
        var jukeParser = new JukeParser();
@@ -16,4 +16,4 @@ describe('JukeParser', function(){
            done();
        });
    });
-});*/
+});
