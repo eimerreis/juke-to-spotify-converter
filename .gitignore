@@ -9,4 +9,5 @@ gen
 # Created by .ignore support plugin (hsz.mobi)
 
 
-#ApiKeys
+#Api Keys will not be regocnized by git
+conf/secrets.js
