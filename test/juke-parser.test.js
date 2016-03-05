@@ -1,4 +1,4 @@
-'use strict';
+/*'use strict';
 var fileSystem = require("fs");
 var should = require('should');
 var util = require('util');
@@ -16,4 +16,4 @@ describe('JukeParser', function(){
            done();
        });
    });
-});
+});*/
