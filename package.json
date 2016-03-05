@@ -16,10 +16,12 @@
   "author": "Moritz Froelich",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.13.4",
     "jq-html-parser": "^0.3.0",
     "jquery": "^2.2.1",
     "jsdom": "^8.1.0",
     "mocha": "^2.4.5",
+    "request": "^2.69.0",
     "should": "^8.2.2"
   }
 }
