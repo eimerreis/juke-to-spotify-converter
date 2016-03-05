@@ -14,5 +14,8 @@
     "converter"
   ],
   "author": "Moritz Froelich",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "mocha": "^2.4.5"
+  }
 }
