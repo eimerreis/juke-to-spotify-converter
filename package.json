@@ -16,6 +16,7 @@
   "author": "Moritz Froelich",
   "license": "ISC",
   "dependencies": {
+    "jq-html-parser": "^0.3.0",
     "mocha": "^2.4.5"
   }
 }
