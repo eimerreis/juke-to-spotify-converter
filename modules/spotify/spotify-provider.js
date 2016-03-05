@@ -29,6 +29,11 @@ SpotifyProvider.prototype.connect = function(cb){
 };
 
 
+/**
+ * Searchs for tracks withing the spotify library and returns all results
+ * @param query
+ * @param cb
+ */
 SpotifyProvider.prototype.searchTracks = function(query, cb){
     var that = this;
     this._spotify.clientCredentialsGrant(null, function(err, data){
@@ -40,6 +45,27 @@ SpotifyProvider.prototype.searchTracks = function(query, cb){
                return cb(new SpotifyError(null, 'Retrieving tracks failed', {query: query}, err), null);
            }
             return cb(null, tracks);
+        });
+    });
+};
+
+
+/**
+ * Searches for tracks in the spotify library and returns only the first result!
+ * @param query
+ * @param cb
+ */
+SpotifyProvider.prototype.searchTrack = function(query, cb){
+    var that = this;
+    this._spotify.clientCredentialsGrant(null, function(err, data){
+        if(err){
+            return cb(new SpotifyError(null, 'Retrieving auth token failed', {}, err), null);
+        }
+        that._spotify.searchTracks(query, {limit: 3}, function(err, tracks){
+            if(err){
+                return cb(new SpotifyError(null, 'Retrieving tracks failed', {query: query}, err), null);
+            }
+            return cb(null, tracks.body.tracks.items[0]);
         });
     });
 };

@@ -17,11 +17,11 @@ describe('Spotfiy Provider', function(){
         });
     });
 
-    it('should search for tracks', function(done){
+    it.only('should return first track of search', function(done){
        this.timeout(10000);
-        spotifyProvider.searchTracks('Ray Charles Hit The Road Jack', function(err, tracks){
+        spotifyProvider.searchTrack('Ray Charles Hit The Road Jack', function(err, track){
             should.not.exist(err);
-            console.log(util.inspect(tracks.body.tracks.items, false, null));
+            console.log(util.inspect(track, false, null));
             done();
         })
     });

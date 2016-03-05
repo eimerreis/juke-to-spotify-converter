@@ -5,7 +5,7 @@ var util = require('util');
 
 var JukeParser = require('../modules/juke/juke-parser');
 
-describe.only('JukeParser', function(){
+describe('JukeParser', function(){
    it('should return all playlist items of the html file', function(done){
        this.timeout(20000);
        var jukeParser = new JukeParser();
