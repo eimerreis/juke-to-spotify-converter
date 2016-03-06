@@ -9,7 +9,8 @@ var SpotifyError = require('./spotify-errors').SpotifyError;
 function SpotifyProvider(){
     this._spotify = new SpotifyWebApi({
         clientId: SpotifyConfig.SPOTIFY_CLIENT_ID,
-        clientSecret: SpotifyConfig.SPOTIFY_SECRET_ID
+        clientSecret: SpotifyConfig.SPOTIFY_SECRET_ID,
+        redirectUri: SpotifyConfig.REDIRECT_URI
     });
 }
 
@@ -51,7 +52,7 @@ SpotifyProvider.prototype.searchTrack = function(query, cb){
             if(err){
                 return cb(new SpotifyError(null, 'Retrieving tracks failed', {query: query}, err), null);
             }
-            return cb(null, tracks.body.tracks.items[0]);
+            return cb(null, tracks.body.tracks.items[0].uri);
         });
     });
 };
@@ -75,17 +76,19 @@ SpotifyProvider.prototype.getUserPlaylists = function(userId, cb){
 SpotifyProvider.prototype.addTracksToPlaylist = function(userId, playlistId, tracks, cb){
     var that = this;
     console.log(tracks);
-    this._spotify.clientCredentialsGrant(null, function(err, data){
+    console.log('AUTH KEY: ', this.AUTHORIZATION_CODE);
+    this._spotify.authorizationCodeGrant(this.AUTHORIZATION_CODE, function(err, data){
         console.log(err);
         console.log(data);
-       if(err){
-           return cb(new SpotifyError(null, 'Retrieving auth token failed', {}, err), null);
+       if(err && !data){
+           return cb(new SpotifyError(null, 'Retrieving auth token failed', {token: that.AUTHORIZATION_CODE}, err), null);
        }
         that._spotify.setAccessToken(data.body['access_token']);
+        that._spotify.setRefreshToken(data.body['refresh_token']);
         that._spotify.addTracksToPlaylist(userId, playlistId, tracks, null, function(err, snapshot){
             console.log(err);
            if(err){
-               return cb(new SpotifyError(null, 'Adding tracks to playlist failed', {}, err), null);
+               return cb(new SpotifyError(null, 'Adding tracks to playlist failed', {track: tracks}, err), null);
            }
             console.log(snapshot);
             return cb(null, snapshot);

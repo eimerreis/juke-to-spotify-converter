@@ -21,6 +21,7 @@
     "jquery": "^2.2.1",
     "jsdom": "^8.1.0",
     "mocha": "^2.4.5",
+    "querystring": "^0.2.0",
     "request": "^2.69.0",
     "should": "^8.2.2",
     "spotify-web-api-js": "^0.18.1",

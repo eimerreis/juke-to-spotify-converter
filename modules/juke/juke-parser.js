@@ -25,7 +25,9 @@ JukeParser.prototype.getTracksFromPlaylist = function(jukeFile, cb){
             $('.trackitem').each(function(){
                 var title = $(this).find('.rowtitle > a').attr('title');
                 var artist = $(this).find('.rowartist > a').attr('title');
-                tracks.push({title: title, artist: artist});
+                var track = JSON.stringify(title + ' ' + artist);
+                track = JSON.parse(track);
+                tracks.push(track);
             })
             return cb(null, tracks);
         })

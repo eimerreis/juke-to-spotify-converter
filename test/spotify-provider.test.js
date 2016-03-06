@@ -17,7 +17,7 @@ describe('Spotfiy Provider', function(){
         });
     });
 
-    it('should return first track of search', function(done){
+    it.only('should return first track of search', function(done){
        this.timeout(10000);
         spotifyProvider.searchTrack('Ray Charles Hit The Road Jack', function(err, track){
             should.not.exist(err);
@@ -26,7 +26,7 @@ describe('Spotfiy Provider', function(){
         })
     });
 
-    it.only('should add a track to a playlist', function(done){
+    it('should add a track to a playlist', function(done){
        this.timeout(10000);
         var tracks = ['spotify:track:7sXxvOVFtMr31xj0kX9BFV'];
         spotifyProvider.addTracksToPlaylist('eimerreis', '4PGRg2Smlckv6z9fGfgnY2', tracks, function(err, snapshot){
